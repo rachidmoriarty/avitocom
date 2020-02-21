@@ -1,0 +1,41 @@
+version: '3'
+
+# Define services
+services:
+  front:
+    restart: always
+    build: ./front
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - '8000:80'
+    depends_on:
+      - goapp
+    environment:
+      - NODE_ENV=development
+    networks:
+      - net0
+
+  # go Service
+  goapp:
+    # Configuration for building the docker image for the service
+    build: ./api
+#    ports:
+#      - "8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    restart: unless-stopped
+    depends_on: 
+      - gccapp # This service depends on redis. Start that first.
+    environment: # Pass environment variables to the service
+      GCC_URL: gccapp:8080   
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - net0
+
+  # gcc Service   
+  gccapp:
+    build: ./server
+    restart: unless-stopped
+    networks:
+      - net0
+
+networks:
+  net0:
