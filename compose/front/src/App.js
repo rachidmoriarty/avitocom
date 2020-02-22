@@ -2,7 +2,22 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './App.css';
 
-const API_URL = "http://goapp:8080/"
+const API_URL = "http://gramyup.com:8080/"
+
+getData() {
+    // create a new XMLHttpRequest
+    var xhr = new XMLHttpRequest()
+
+    // get a callback when the server responds
+    xhr.addEventListener('load', () => {
+      // update the state of the component with the result here
+      console.log(xhr.responseText)
+    })
+    // open the request with the verb and the url
+    xhr.open('GET', '')
+    // send the request
+    xhr.send()
+  }
 
 class App extends React.Component {
   constructor(props) {

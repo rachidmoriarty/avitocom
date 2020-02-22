@@ -6,10 +6,11 @@ services:
   frontend:
     restart: always
     build: ./front
+    container_name: frontend
     volumes:
       - '.:/usr/src/app'
-    expose:
-      - "9000"
+    ports:
+      - "9000:9000"
     depends_on:
       - goapp
     environment:
@@ -19,8 +20,9 @@ services:
   # reverse proxy container (nginx)
   nginx:
     build: ./nginx
+    container_name: nginx
     ports:
-      - 8001:80
+      - 80:80
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
     links:
@@ -35,8 +37,9 @@ services:
   goapp:
     # Configuration for building the docker image for the service
     build: ./api
-    expose:
-      - "8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    container_name: goapp
+    ports:
+      - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
     restart: unless-stopped
     depends_on: 
       - gccapp # This service depends on redis. Start that first.
@@ -46,7 +49,17 @@ services:
   # gcc Service   
   gccapp:
     build: ./server
-    expose:
-      - "9999"
+    container_name: gccapp
+    ports:
+      - "9999:9999"
     restart: unless-stopped
 
+  registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    # Tell registrator where the etcd HTTP API is and to use 
+    # the docker VM's IP
+    command: ["-ip", "$HOST_IP", "etcd://167.114.129.188:2379/"]
+    volumes:
+     # So registrator can use the docker API to inspect containers
+    - "/var/run/docker.sock:/tmp/docker.sock"
