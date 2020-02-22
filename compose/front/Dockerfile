@@ -9,6 +9,6 @@ FROM mhart/alpine-node
 RUN yarn global add serve
 WORKDIR /app
 COPY --from=builder /app/build .
-EXPOSE 8000
-CMD ["serve", "-p", "80", "-s", "."]
+EXPOSE 9000
+CMD ["serve", "-p", "9000", "-s", "."]
 

@@ -9,7 +9,7 @@ services:
     volumes:
       - '.:/usr/src/app'
     expose:
-      - "8000"
+      - "9000"
     depends_on:
       - goapp
     environment:
@@ -20,11 +20,13 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 80:80
+      - 8001:80
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
     links:
       - frontend:frontend
+    environment: # Pass environment variables to the service
+      FRONTEND_URL: frontend:9000
     depends_on:
       - frontend
 
@@ -39,7 +41,7 @@ services:
     depends_on: 
       - gccapp # This service depends on redis. Start that first.
     environment: # Pass environment variables to the service
-      GCC_URL: gccapp:8080   
+      GCC_URL: gccapp:9999   
 
   # gcc Service   
   gccapp:
