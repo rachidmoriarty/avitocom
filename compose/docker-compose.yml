@@ -23,12 +23,17 @@ services:
     container_name: nginx
     ports:
       - 80:80
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+#    volumes:
+#      - ./nginx/conf.d:/etc/nginx/conf.d
+#      - ./nginx/confd:/etc/confd/
     links:
       - frontend:frontend
     environment: # Pass environment variables to the service
       FRONTEND_URL: frontend:9000
+      NGINX_BACKEND_SERVICE: gramyup.com
+      NGINX_DEMO_DOMAIN: blog.gramyup.com
+      HOST_IP: 167.114.129.188
+      ETCD_PORT: 2379
     depends_on:
       - frontend
 
